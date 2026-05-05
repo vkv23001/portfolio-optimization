@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MPT Portfolio Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      padding: 32px 24px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #58a6ff;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #8b949e;
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 10px;
+      background: #238636;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .badge-date {
+      display: inline-block;
+      margin-top: 6px;
+      margin-left: 8px;
+      background: #1f6feb;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* ── Summary Cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto 40px;
+    }
+
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .card .label {
+      font-size: 0.78rem;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .card .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #58a6ff;
+    }
+
+    .card .sub {
+      font-size: 0.8rem;
+      color: #8b949e;
+      margin-top: 4px;
+    }
+
+    /* ── Sections ── */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto 40px;
+    }
+
+    .section h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #e6edf3;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #30363d;
+    }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead tr { background: #161b22; }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      color: #8b949e;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid #30363d;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #21262d;
+      color: #e6edf3;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover   { background: #161b22; }
+
+    .positive { color: #3fb950; font-weight: 600; }
+    .negative { color: #f85149; font-weight: 600; }
+    .neutral  { color: #58a6ff; font-weight: 600; }
+
+    /* ── Today's Allocation ── */
+    .alloc-box {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 1100px;
+      margin: 0 auto 40px;
+    }
+
+    .alloc-box h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #e6edf3;
+      margin-bottom: 6px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .alloc-box .updated {
+      font-size: 0.78rem;
+      color: #8b949e;
+      margin-bottom: 16px;
+    }
+
+    .signal-invest { color: #3fb950; font-weight: 700; }
+    .signal-cash   { color: #f85149; font-weight: 700; }
+
+    /* ── CNN Score Bar ── */
+    .cnn-bar-wrapper {
+      max-width: 1100px;
+      margin: 0 auto 40px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .cnn-bar-wrapper h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #e6edf3;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .cnn-bar-track {
+      position: relative;
+      height: 28px;
+      border-radius: 14px;
+      background: linear-gradient(to right,
+        #f85149 0%,
+        #f0883e 25%,
+        #e3b341 45%,
+        #7ee787 55%,
+        #3fb950 75%,
+        #1a7f37 100%
+      );
+      margin-bottom: 8px;
+    }
+
+    .cnn-bar-marker {
+      position: absolute;
+      top: -6px;
+      width: 4px;
+      height: 40px;
+      background: #fff;
+      border-radius: 2px;
+      transform: translateX(-50%);
+      transition: left 0.5s ease;
+      box-shadow: 0 0 6px rgba(255,255,255,0.6);
+    }
+
+    .cnn-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: #8b949e;
+      margin-top: 4px;
+    }
+
+    .cnn-score-display {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #e6edf3;
+    }
+
+    /* ── Charts ── */
+    .charts {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+
+    .chart-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .chart-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #8b949e;
+      margin-bottom: 16px;
+    }
+
+    .chart-card img {
+      width: 100%;
+      border-radius: 6px;
+      display: block;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      color: #484f58;
+      font-size: 0.8rem;
+    }
+
+    footer a { color: #58a6ff; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>MPT Portfolio Optimizer</h1>
+    <p>Modern Portfolio Theory · 5-Day Sliding Window · 20 Stocks · 5 Sectors · Rolling 1-Year Window</p>
+    <br/>
+    <span class="badge">&#x25CF; Live — Updates Daily at 3:55 PM ET</span>
+    <span class="badge-date" id="last-updated">Loading...</span>
+  </header>
+
+  <!-- Summary Cards -->
+  <div class="cards">
+    <div class="card">
+      <div class="label">MPT Final Value</div>
+      <div class="value" id="card-final">—</div>
+      <div class="sub">Started at $10,000</div>
+    </div>
+    <div class="card">
+      <div class="label">MPT Total Return</div>
+      <div class="value positive" id="card-return">—</div>
+      <div class="sub">Rolling 1 Year</div>
+    </div>
+    <div class="card">
+      <div class="label">MPT Sharpe Ratio</div>
+      <div class="value neutral" id="card-sharpe">—</div>
+      <div class="sub">Annualized</div>
+    </div>
+    <div class="card">
+      <div class="label">Max Drawdown</div>
+      <div class="value negative" id="card-drawdown">—</div>
+      <div class="sub">MPT Portfolio</div>
+    </div>
+    <div class="card">
+      <div class="label">Today's Signal</div>
+      <div class="value" id="card-signal">—</div>
+      <div class="sub" id="card-cnn">CNN F&G: —</div>
+    </div>
+  </div>
+
+  <!-- CNN Fear & Greed Score Bar -->
+  <div class="cnn-bar-wrapper">
+    <h2>&#x1F4CA; CNN Fear &amp; Greed Index — Today's Reading</h2>
+    <div class="cnn-bar-track">
+      <div class="cnn-bar-marker" id="cnn-marker" style="left: 50%"></div>
+    </div>
+    <div class="cnn-bar-labels">
+      <span>Extreme Fear</span>
+      <span>Fear</span>
+      <span>Neutral</span>
+      <span>Greed</span>
+      <span>Extreme Greed</span>
+    </div>
+    <div class="cnn-score-display" id="cnn-score-display">
+      Score: — &nbsp;|&nbsp; Rating: —
+    </div>
+  </div>
+
+  <!-- Today's Allocation -->
+  <div class="alloc-box">
+    <h2>&#x1F4C8; Today's Recommended Allocation</h2>
+    <div class="updated" id="alloc-date">Loading latest allocation...</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Sector</th>
+          <th>Weight (%)</th>
+          <th>Signal</th>
+        </tr>
+      </thead>
+      <tbody id="alloc-body">
+        <tr><td colspan="4" style="color:#8b949e">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Strategy Comparison Table -->
+  <div class="section">
+    <h2>Strategy Comparison</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Strategy</th>
+          <th>Final Value ($)</th>
+          <th>Total Return (%)</th>
+          <th>Annualized Sharpe</th>
+          <th>Max Drawdown (%)</th>
+        </tr>
+      </thead>
+      <tbody id="summary-body">
+        <tr><td colspan="5" style="color:#8b949e">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Charts -->
+  <div class="section">
+    <h2>Charts</h2>
+    <div class="charts">
+
+      <div class="chart-card">
+        <h3>Strategy Comparison — Portfolio Value Over Time</h3>
+        <img src="outputs/performance_comparison.png?cb=1" alt="Performance Comparison" id="img-perf"/>
+      </div>
+
+      <div class="chart-card">
+        <h3>CNN Fear &amp; Greed Index — Red Zones = Portfolio Holds Cash</h3>
+        <img src="outputs/cnn_fear_greed.png?cb=1" alt="CNN Fear and Greed" id="img-cnn"/>
+      </div>
+
+      <div class="chart-card">
+        <h3>Rolling 21-Day Sharpe Ratio — All Strategies</h3>
+        <img src="outputs/rolling_sharpe.png?cb=1" alt="Rolling Sharpe Ratio" id="img-sharpe"/>
+      </div>
+
+      <div class="chart-card">
+        <h3>Efficient Frontier — Random Portfolios vs Optimal Point</h3>
+        <img src="outputs/efficient_frontier.png?cb=1" alt="Efficient Frontier" id="img-frontier"/>
+      </div>
+
+      <div class="chart-card">
+        <h3>Daily Allocation Shift Across Stocks (MPT)</h3>
+        <img src="outputs/allocation_shift.png?cb=1" alt="Allocation Shift" id="img-alloc"/>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      OPIM 5641 · Business Decision Modeling · University of Connecticut ·
+      <a href="https://github.com/JAIDEEP-TRIP/portfolio-optimization" target="_blank">
+        View Source on GitHub
+      </a>
+    </p>
+    <p style="margin-top:6px;">
+      Powered by Modern Portfolio Theory · CNN Fear &amp; Greed Index · Yahoo Finance · GitHub Actions
+    </p>
+  </footer>
+
+  <script>
+    const ts = new Date().getTime();
+
+    // Cache-bust all chart images
+    document.querySelectorAll(".chart-card img").forEach(img => {
+      img.src = img.src.replace("cb=1", "cb=" + ts);
+    });
+
+    // Last updated timestamp
+    const now = new Date();
+    document.getElementById("last-updated").textContent =
+      "Updated: " + now.toLocaleDateString("en-US", {
+        month: "short", day: "numeric", year: "numeric"
+      });
+
+    // Load summary.csv
+    fetch("outputs/summary.csv?cb=" + ts)
+      .then(r => r.text())
+      .then(text => {
+        const lines = text.trim().split("\n");
+        const tbody = document.getElementById("summary-body");
+        tbody.innerHTML = "";
+
+        const colorMap = {
+          "MPT Portfolio":       "steelblue",
+          "S&P 500 Buy & Hold":  "darkorange",
+          "MA Crossover (5/20)": "green",
+          "CNN Fear Gated MPT":  "crimson"
+        };
+
+        for (let i = 1; i < lines.length; i++) {
+          const cols      = lines[i].trim().split(",");
+          const strategy  = cols[0].trim();
+          const final     = parseFloat(cols[1]);
+          const ret       = parseFloat(cols[2]);
+          const sharpe    = parseFloat(cols[3]);
+          const dd        = parseFloat(cols[4]);
+
+          const color = colorMap[strategy] || "#e6edf3";
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><strong style="color:${color}">${strategy}</strong></td>
+            <td>$${final.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+            <td class="${ret >= 0 ? 'positive' : 'negative'}">${ret >= 0 ? '+' : ''}${ret}%</td>
+            <td class="neutral">${sharpe}</td>
+            <td class="negative">${dd}%</td>
+          `;
+          tbody.appendChild(tr);
+
+          // Populate MPT cards from first row
+          if (i === 1) {
+            document.getElementById("card-final").textContent =
+              "$" + final.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0});
+            document.getElementById("card-return").textContent =
+              (ret >= 0 ? "+" : "") + ret + "%";
+            document.getElementById("card-sharpe").textContent = sharpe;
+            document.getElementById("card-drawdown").textContent = dd + "%";
+          }
+        }
+      })
+      .catch(() => {
+        document.getElementById("summary-body").innerHTML =
+          "<tr><td colspan='5' style='color:#f85149'>Failed to load summary.csv</td></tr>";
+      });
+
+    // Load todays_allocation.csv
+    // Columns: date, ticker, sector, weight, cnn_score, cnn_rating, signal
+    fetch("outputs/todays_allocation.csv?cb=" + ts)
+      .then(r => r.text())
+      .then(text => {
+        const lines = text.trim().split("\n");
+        const tbody = document.getElementById("alloc-body");
+        tbody.innerHTML = "";
+
+        let allocDate  = "";
+        let cnnScore   = "";
+        let cnnRating  = "";
+
+        for (let i = 1; i < lines.length; i++) {
+          const cols    = lines[i].trim().split(",");
+          allocDate     = cols[0].trim();
+          const ticker  = cols[1].trim();
+          const sector  = cols[2].trim();
+          const weight  = parseFloat(cols[3]) * 100;
+          cnnScore      = cols[4].trim();
+          cnnRating     = cols[5].trim();
+          const signal  = cols[6] ? cols[6].trim() : "";
+
+          const isCash      = ticker === "CASH";
+          const signalClass = isCash ? "signal-cash" : "signal-invest";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><strong>${ticker}</strong></td>
+            <td>${sector}</td>
+            <td>${isCash ? "100%" : weight.toFixed(1) + "%"}</td>
+            <td class="${signalClass}">${signal}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+
+        // Update allocation date
+        document.getElementById("alloc-date").textContent =
+          "As of: " + allocDate + "  |  CNN Score: " + parseFloat(cnnScore).toFixed(1) +
+          "  |  Rating: " + cnnRating.charAt(0).toUpperCase() + cnnRating.slice(1);
+
+        // Update CNN card
+        document.getElementById("card-cnn").textContent =
+          "CNN F&G: " + parseFloat(cnnScore).toFixed(1);
+
+        // Update CNN score bar
+        const score  = parseFloat(cnnScore);
+        const pct    = Math.min(Math.max(score, 0), 100);
+        document.getElementById("cnn-marker").style.left = pct + "%";
+        document.getElementById("cnn-score-display").textContent =
+          "Score: " + pct.toFixed(1) + "  |  Rating: " +
+          cnnRating.charAt(0).toUpperCase() + cnnRating.slice(1);
+
+        // Signal card
+        const signalEl    = document.getElementById("card-signal");
+        const firstSignal = lines[1] ? lines[1].trim().split(",")[6] : "";
+        if (firstSignal && firstSignal.trim().includes("CASH")) {
+          signalEl.textContent = "HOLD CASH";
+          signalEl.className   = "value signal-cash";
+        } else {
+          signalEl.textContent = "INVEST";
+          signalEl.className   = "value signal-invest";
+        }
+      })
+      .catch(() => {
+        document.getElementById("alloc-body").innerHTML =
+          "<tr><td colspan='4' style='color:#f85149'>Failed to load todays_allocation.csv</td></tr>";
+      });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+name: Daily Portfolio Run
+
+on:
+  schedule:
+    # Runs at 3:55 PM ET (19:55 UTC) on weekdays
+    - cron: "55 19 * * 1-5"
+  workflow_dispatch:
+    # Allows manual trigger from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  run-portfolio:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Run the portfolio optimization script
+      - name: Run portfolio optimization
+        run: |
+          python portfolio_optimization.py
+
+      # Step 5: Commit updated outputs back to the repo
+      - name: Commit and push updated outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add outputs/
+          git diff --staged --quiet || git commit -m "auto: daily portfolio update $(date +'%Y-%m-%d')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
