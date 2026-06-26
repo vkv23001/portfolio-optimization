@@ -1,11 +1,2 @@
 date,ticker,sector,weight,cnn_score,cnn_rating,signal
-2026-06-25,NVDA,Tech,0.05,25.46,fear,INVEST
-2026-06-25,AAPL,Tech,0.05,25.46,fear,INVEST
-2026-06-25,ABBV,Healthcare,0.0563,25.46,fear,INVEST
-2026-06-25,JNJ,Healthcare,0.05,25.46,fear,INVEST
-2026-06-25,AEP,Utilities,0.2937,25.46,fear,INVEST
-2026-06-25,NEE,Utilities,0.3,25.46,fear,INVEST
-2026-06-25,COP,Commodities,0.05,25.46,fear,INVEST
-2026-06-25,XOM,Commodities,0.05,25.46,fear,INVEST
-2026-06-25,BAC,Finance,0.05,25.46,fear,INVEST
-2026-06-25,JPM,Finance,0.05,25.46,fear,INVEST
+2026-06-26,CASH,N/A,1.0,24.77,extreme fear,HOLD CASH — Extreme Fear
