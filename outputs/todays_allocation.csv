@@ -1,11 +1,2 @@
 date,ticker,sector,weight,cnn_score,cnn_rating,signal
-2026-10-15,AAPL,Tech,0.05,31.54,fear,INVEST
-2026-10-15,MSFT,Tech,0.1488,31.54,fear,INVEST
-2026-10-15,PFE,Healthcare,0.05,31.54,fear,INVEST
-2026-10-15,UNH,Healthcare,0.05,31.54,fear,INVEST
-2026-10-15,SO,Utilities,0.05,31.54,fear,INVEST
-2026-10-15,AEP,Utilities,0.2822,31.54,fear,INVEST
-2026-10-15,XOM,Commodities,0.05,31.54,fear,INVEST
-2026-10-15,CVX,Commodities,0.2189,31.54,fear,INVEST
-2026-10-15,JPM,Finance,0.05,31.54,fear,INVEST
-2026-10-15,WFC,Finance,0.05,31.54,fear,INVEST
+2026-10-16,CASH,N/A,1.0,17.94,extreme fear,HOLD CASH — Extreme Fear
